@@ -8,7 +8,7 @@ services:
     command: -config.file=/etc/loki/loki-config.yaml
     volumes:
       - ./loki-config.yaml:/etc/loki/loki-config.yaml
-      - loki_data:/tmp/loki
+      - ./loki_data:/tmp/loki
     networks:
       - monitoring
 
@@ -45,7 +45,7 @@ services:
     environment:
       - SERVER_IP=${SERVER_IP}
     ports:
-      - "9091:9090"
+      - "9091:9091"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
