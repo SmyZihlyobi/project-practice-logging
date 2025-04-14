@@ -8,5 +8,5 @@ datasources:
 
   - name: Prometheus
     type: prometheus
-    url: http://prometheus:9091
+    url: http://176.108.254.89:9091
     access: proxy
