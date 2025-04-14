@@ -3,11 +3,8 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'prometheus'
-    static_configs:
-      - targets: ['localhost:9090']
-
-  - job_name: 'external_app'
+  - job_name: 'spring-boot-app'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['62.233.43.154:8080']
+      - targets:
+        - "${SERVER_IP}:8080"
