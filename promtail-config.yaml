@@ -14,5 +14,5 @@ scrape_configs:
       - host: unix:///var/run/docker.sock
     relabel_configs:
       - source_labels: [__meta_docker_container_name]
-        regex: "${CONTAINER_NAME}"
+        regex: "practice-java-backend-project-practice-1"
         action: keep
