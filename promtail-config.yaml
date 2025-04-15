@@ -41,6 +41,7 @@ scrape_configs:
       labels:
         job: nginx-file-logs
         __path__: /var/log/nginx/*.log
+        container_name: project-practice-frontend-web-1
 
   pipeline_stages:
     - static_labels:
