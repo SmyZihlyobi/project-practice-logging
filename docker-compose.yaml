@@ -20,6 +20,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ./promtail-config.yaml:/etc/promtail/config.yml
+      - nginx_logs:/var/log/nginx:ro
     command: -config.file=/etc/promtail/config.yml
     depends_on:
       - loki
@@ -60,6 +61,8 @@ volumes:
   loki_data:
   grafana_data:
   prometheus_data:
+  nginx_logs:
+    external: true
 
 networks:
   monitoring:
