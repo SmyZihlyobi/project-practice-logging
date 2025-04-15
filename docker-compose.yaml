@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   loki:
     image: grafana/loki:latest
@@ -6,24 +8,23 @@ services:
     command: -config.file=/etc/loki/loki-config.yaml
     volumes:
       - ./loki-config.yaml:/etc/loki/loki-config.yaml
-      - loki_data:/tmp/loki
+      - ./loki_data:/tmp/loki
     networks:
       - monitoring
-    restart: unless-stopped
 
   promtail:
     image: grafana/promtail:latest
+    environment:
+      - CONTAINER_NAME=${CONTAINER_NAME}
     volumes:
-      # Монтируем ВНЕШНИЙ именованный том, используемый фронтендом
-      - nginx_logs:/var/log/nginx:ro # <-- Монтируем том nginx_logs (read-only)
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./promtail-config.yaml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     depends_on:
       - loki
     networks:
       - monitoring
-    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
@@ -32,37 +33,33 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
     depends_on:
       - loki
-      - prometheus
     networks:
       - monitoring
-    restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:latest
+    environment:
+      - SERVER_IP=${SERVER_IP}
     ports:
       - "9091:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
     networks:
       - monitoring
-    restart: unless-stopped
 
 volumes:
   loki_data:
   grafana_data:
   prometheus_data:
-  # Объявляем, что том nginx_logs существует вне этого docker-compose файла
-  nginx_logs:
-    external: true # <-- Указываем, что том внешний
 
 networks:
   monitoring:
