@@ -10,12 +10,24 @@ clients:
 
 scrape_configs:
 - job_name: docker-logs
+  docker_sd_configs:
+    - host: unix:///var/run/docker.sock
+      refresh_interval: 5s
+  relabel_configs:
+    - source_labels: ['__meta_docker_container_name']
+      regex: '/(.*)'
+      target_label: 'container'
+    - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
+      target_label: 'service'
+
+- job_name: frontend_nginx
   static_configs:
   - targets:
       - localhost
     labels:
-      job: docker-logs
-      __path__: /var/lib/docker/containers/*/*log
+      job: frontend_nginx_logs
+      host: frontend_web_service
+      __path__: /var/log/nginx/*log
 
   pipeline_stages:
 
