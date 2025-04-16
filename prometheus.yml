@@ -8,3 +8,9 @@ scrape_configs:
     static_configs:
       - targets:
         - "api.ivanmalks.online"
+
+  - job_name: 'telegraf'
+    scrape_interval: 10s # Match Telegraf's interval or scrape more/less often
+    static_configs:
+      - targets:
+        - "telegraf.ivanmalks.online"

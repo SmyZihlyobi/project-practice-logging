@@ -33,3 +33,16 @@ scrape_configs:
       tag:
       image_name:
       container_name:
+
+- job_name: nginx-file-logs
+  static_configs:
+    - targets:
+        - localhost
+      labels:
+        job: nginx-file-logs
+        __path__: /var/log/nginx/*.log
+        container_name: project-practice-frontend-web-1
+
+  pipeline_stages:
+    - static_labels:
+        source: nginx-file
